@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:safe_app/safe_device_screen.dart';
+
+import 'safe_device_screen.dart';
 
 void main() {
   runApp(const MyApp());

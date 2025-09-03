@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:safe_app/blocked_page.dart';
-import 'package:safe_app/home_screen.dart';
 import 'package:safe_device/safe_device.dart';
+
+import 'blocked_page.dart';
+import 'home_screen.dart';
 
 class SafeDeviceScreen extends StatefulWidget {
   const SafeDeviceScreen({super.key});
