@@ -5,6 +5,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO [MEDIUM] (Accessibility): Extract UI strings to App Strings resource.
     return const Scaffold(body: Center(child: Text("Home Screen")));
   }
 }

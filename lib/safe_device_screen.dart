@@ -37,6 +37,7 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
       } else {
         _goToHome();
       }
+    // TODO [HIGH] (Error Handling): Avoid broad exception catches — Catch specific issues and show the error details instead of using `catch (e)` which can hide root causes.
     } catch (e) {
       _goToBlockedPage();
     }

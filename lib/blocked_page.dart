@@ -18,11 +18,13 @@ class BlockedPage extends StatelessWidget {
                 color: Colors.redAccent,
               ),
               const SizedBox(height: 20),
+              // TODO [MEDIUM] (Accessibility): Extract UI strings to App Strings resource.
               const Text(
                 "Security Check Failed",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
+              // TODO [MEDIUM] (Accessibility): Extract UI strings to App Strings resource.
               const Text(
                 "Your device does not meet the security requirements.",
                 textAlign: TextAlign.center,
