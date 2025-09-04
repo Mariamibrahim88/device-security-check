@@ -1,16 +1,15 @@
-# safe_app
+#  Safe Device Check App
 
-A new Flutter project.
+A simple **Flutter app** that demonstrates the concept of **Device Security Validation** using the [`safe_device`](https://pub.dev/packages/safe_device) package.  
+The app checks the user’s device against multiple security rules before allowing access.  
+If the device fails any check (e.g., running on an emulator, rooted/jailbroken, developer mode enabled), the user is redirected to a **Blocked Page** instead of the home screen.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+##  Features
+- ✅ Detect if the device is **Rooted / Jailbroken**  
+- ✅ Detect if running on an **Emulator**  
+- ✅ Detect **Mock Location** usage  
+- ✅ Detect if **Developer Mode** is enabled  
+- ✅ Ensure the device passes the **Safety Check**  
+- ✅ Redirect blocked devices to an **Access Restricted screen**  
