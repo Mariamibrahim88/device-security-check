@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:safe_app/core/utils/app_string.dart';
+import 'core/utils/app_string.dart';
 
 class BlockedPage extends StatelessWidget {
   const BlockedPage({super.key, required this.reason});

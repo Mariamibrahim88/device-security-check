@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:safe_app/check_device.dart';
+import 'check_device.dart';
 import 'package:safe_device/safe_device.dart';
 
 import 'blocked_page.dart';
@@ -16,11 +16,13 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
   @override
   void initState() {
     super.initState();
+    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigation during initState — Avoid initiating navigation directly in initState; schedule navigation after the first frame or check `mounted` before navigating.
     initPlatformState();
   }
 
   Future<void> initPlatformState() async {
     try {
+      // TODO [MEDIUM] (Performance Bottlenecks): Sequential awaits in list literal — Multiple awaited checks here run sequentially and may add latency; consider running checks in parallel (e.g., with Future.wait) or adding timeouts.
       final rules = [
         CheckDevice(!await SafeDevice.isRealDevice, "Running on emulator"),
         CheckDevice(
@@ -51,11 +53,13 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
 
       _goToHome();
     } catch (e) {
+      // TODO [HIGH] (Error Handling): Exposing raw exception message — Avoid showing raw exception strings to users as they may leak sensitive implementation details; log the exception and show a generic user-facing message.
       _goToBlockedPage("error: $e");
     }
   }
 
   void _goToBlockedPage(String reason) {
+    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigator calls without mounted check — Ensure `mounted` is true or perform navigation in a post-frame callback to avoid using a stale `context` from initState/async work.
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => BlockedPage(reason: reason)),
@@ -63,6 +67,7 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
   }
 
   void _goToHome() {
+    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigator calls without mounted check — Ensure `mounted` is true or perform navigation in a post-frame callback to avoid using a stale `context` from initState/async work.
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),
