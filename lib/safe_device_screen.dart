@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safe_app/core/utils/app_string.dart';
 import 'check_device.dart';
 import 'package:safe_device/safe_device.dart';
 
@@ -16,34 +17,26 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
   @override
   void initState() {
     super.initState();
-    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigation during initState — Avoid initiating navigation directly in initState; schedule navigation after the first frame or check `mounted` before navigating.
-    // Explainer: Calling Navigator during initState can access BuildContext before the widget is fully mounted, causing exceptions or unexpected behavior; schedule navigation with WidgetsBinding.instance.addPostFrameCallback or perform navigation after confirming `mounted` to ensure a valid context and avoid race conditions and rebuild-side effects.
     initPlatformState();
   }
 
   Future<void> initPlatformState() async {
     try {
-      // TODO [MEDIUM] (Performance Bottlenecks): Sequential awaits in list literal — Multiple awaited checks here run sequentially and may add latency; consider running checks in parallel (e.g., with Future.wait) or adding timeouts.
-      // Explainer: Each `await` in the list forces the checks to run one after another, increasing total latency; run independent checks concurrently with Future.wait, add sensible timeouts, and fail fast where appropriate to improve startup performance and user experience.
+      final checkList = await Future.wait([
+        SafeDevice.isRealDevice,
+        SafeDevice.isJailBroken,
+        SafeDevice.isMockLocation,
+        SafeDevice.isOnExternalStorage,
+        SafeDevice.isSafeDevice,
+        SafeDevice.isDevelopmentModeEnable,
+      ]);
       final rules = [
-        CheckDevice(!await SafeDevice.isRealDevice, "Running on emulator"),
-        CheckDevice(
-          await SafeDevice.isJailBroken,
-          "Device is jailbroken or rooted",
-        ),
-        CheckDevice(
-          await SafeDevice.isMockLocation,
-          "Mock location is enabled",
-        ),
-        CheckDevice(
-          await SafeDevice.isOnExternalStorage,
-          "App is installed on external storage",
-        ),
-        CheckDevice(!await SafeDevice.isSafeDevice, "Check device safety"),
-        CheckDevice(
-          await SafeDevice.isDevelopmentModeEnable,
-          "Developer mode is enabled",
-        ),
+        CheckDevice(!checkList[0], AppString.emulatorMessage),
+        CheckDevice(checkList[1], AppString.jailbrokenMessage),
+        CheckDevice(checkList[2], AppString.mockLocationMessage),
+        CheckDevice(checkList[3], AppString.externalStorageMessage),
+        CheckDevice(!checkList[4], AppString.safetyCheckMessage),
+        CheckDevice(checkList[5], AppString.devModeMessage),
       ];
 
       for (final rule in rules) {
@@ -52,31 +45,28 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
           return;
         }
       }
-
       _goToHome();
     } catch (e) {
-      // TODO [HIGH] (Error Handling): Exposing raw exception message — Avoid showing raw exception strings to users as they may leak sensitive implementation details; log the exception and show a generic user-facing message.
-      // Explainer: Surface only concise, non-sensitive error messages to users while logging full exception details to a secure logging system (with stack traces scrubbed of PII); this prevents leaking implementation details and helps diagnostics without compromising security or user trust.
-      _goToBlockedPage("error: $e");
+      _goToBlockedPage(AppString.unknownErrorMessage);
     }
   }
 
   void _goToBlockedPage(String reason) {
-    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigator calls without mounted check — Ensure `mounted` is true or perform navigation in a post-frame callback to avoid using a stale `context` from initState/async work.
-    // Explainer: After async operations the State may be disposed; checking `if (!mounted) return;` before calling Navigator or using addPostFrameCallback ensures navigation uses a live context and prevents exceptions and memory leaks.
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => BlockedPage(reason: reason)),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => BlockedPage(reason: reason)),
+      );
+    });
   }
 
   void _goToHome() {
-    // TODO [HIGH] (Widget Optimization, Responsive & Adaptive UI): Navigator calls without mounted check — Ensure `mounted` is true or perform navigation in a post-frame callback to avoid using a stale `context` from initState/async work.
-    // Explainer: After async operations the State may be disposed; checking `if (!mounted) return;` before calling Navigator or using addPostFrameCallback ensures navigation uses a live context and prevents exceptions and memory leaks.
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    });
   }
 
   @override
