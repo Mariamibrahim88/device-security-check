@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:safe_app/core/utils/app_string.dart';
 
 class BlockedPage extends StatelessWidget {
-  const BlockedPage({super.key});
+  const BlockedPage({super.key, required this.reason});
+
+  final String reason;
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +21,13 @@ class BlockedPage extends StatelessWidget {
                 color: Colors.redAccent,
               ),
               const SizedBox(height: 20),
-              // TODO [MEDIUM] (Accessibility): Extract UI strings to App Strings resource.
               const Text(
-                "Security Check Failed",
+                AppString.blockedMessage,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              // TODO [MEDIUM] (Accessibility): Extract UI strings to App Strings resource.
-              const Text(
-                "Your device does not meet the security requirements.",
+              Text(
+                reason,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safe_app/check_device.dart';
 import 'package:safe_device/safe_device.dart';
 
 import 'blocked_page.dart';
@@ -20,33 +21,44 @@ class _SafeDeviceScreenState extends State<SafeDeviceScreen> {
 
   Future<void> initPlatformState() async {
     try {
-      bool isJailBroken = await SafeDevice.isJailBroken;
-      bool isRealDevice = await SafeDevice.isRealDevice;
-      bool isMockLocation = await SafeDevice.isMockLocation;
-      bool isOnExternalStorage = await SafeDevice.isOnExternalStorage;
-      bool isSafeDevice = await SafeDevice.isSafeDevice;
-      bool isDevelopmentModeEnable = await SafeDevice.isDevelopmentModeEnable;
+      final rules = [
+        CheckDevice(!await SafeDevice.isRealDevice, "Running on emulator"),
+        CheckDevice(
+          await SafeDevice.isJailBroken,
+          "Device is jailbroken or rooted",
+        ),
+        CheckDevice(
+          await SafeDevice.isMockLocation,
+          "Mock location is enabled",
+        ),
+        CheckDevice(
+          await SafeDevice.isOnExternalStorage,
+          "App is installed on external storage",
+        ),
+        CheckDevice(!await SafeDevice.isSafeDevice, "Check device safety"),
+        CheckDevice(
+          await SafeDevice.isDevelopmentModeEnable,
+          "Developer mode is enabled",
+        ),
+      ];
 
-      if (isJailBroken ||
-          isRealDevice ||
-          isOnExternalStorage ||
-          !isSafeDevice ||
-          isMockLocation ||
-          isDevelopmentModeEnable) {
-        _goToBlockedPage();
-      } else {
-        _goToHome();
+      for (final rule in rules) {
+        if (rule.check) {
+          _goToBlockedPage(rule.message);
+          return;
+        }
       }
-    // TODO [HIGH] (Error Handling): Avoid broad exception catches — Catch specific issues and show the error details instead of using `catch (e)` which can hide root causes.
+
+      _goToHome();
     } catch (e) {
-      _goToBlockedPage();
+      _goToBlockedPage("error: $e");
     }
   }
 
-  void _goToBlockedPage() {
+  void _goToBlockedPage(String reason) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const BlockedPage()),
+      MaterialPageRoute(builder: (_) => BlockedPage(reason: reason)),
     );
   }
 
